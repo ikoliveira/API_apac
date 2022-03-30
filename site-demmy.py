@@ -16,8 +16,10 @@ import calplot
 import numpy as np
 
 
-st.title("Dados estações - INMET")
-bk.sub_text("Projeto de Estagio", align="center", font=30)
+bk.sub_text("Dados estações - INMET", align="center", font=40)
+#bk.sub_text("Projeto de Estagio", align="center", font=20)
+bk.sub_text('''Desenvolvido por Demmily Fernandes em estágio realizado na Agência Pernambucana
+de Águas e Clima (APAC). Supervisão: Vinicius Gomes. Colaborações: Igor Oliveira.''', align="justify", font=13)
 
 
 img = 'background.png'
@@ -26,7 +28,7 @@ bk.set_bg_hack(img)
 st.sidebar.image(icone, use_column_width=True)
 
 
-@st.cache
+#@st.cache
 def acionaSite(estadoEstacao):
     codigosEstacoes = bk.codigosEstacoes(data, estadoEstacao)
     for i in range(len(codigosEstacoes)):
@@ -106,6 +108,15 @@ if bk.validalink(link):
     if formRes:
         acionaSite(estadoEstacao)
     else:
-        bk.sub_text("texto a ser inserido...", align="justify", font=15)
+        bk.sub_text('''A presente aplicação gera tabelas ou gráficos de acordo com a variável selecionada.
+        Em se tratando das variáveis temperatura e umidade, são geradas tabelas com os valores máximos e 
+        mínimos diários. Caso a opção selecionada seja precipitação, será disponibilizado as opções de 
+        visualização em gráfico de barras ou calendário de chuva. Ainda há a opção de visualização da 
+        localização das estações do estado selecionado.''',  align="justify", font=15)
+        bk.sub_text('''Obs: A opção de gráfico de barras interativo para
+        chuva disponibilizada pelo streamlit mostra a precipitação com diferença de um dia da data do
+        episodio real, portanto é recomendado observar a data através do eixo do gráfico ao invés
+        do modo interativo. Caso a visualização seja o calendário de chuvas, recomenda-se selecionar o período 
+        de pelo menos um mês de dados.''',  align="justify", font=15)
 else:
     st.warning('warnin')
