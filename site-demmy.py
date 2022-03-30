@@ -59,6 +59,7 @@ def acionaSite(estadoEstacao):
                 bk.decideGrafico(var, chuvasite, dataInicio, dataFim)
 
         elif(variavel == 'Mapa de Estações'):
+            
             dfgeral = pd.DataFrame(data = None);
             for i in range(len(codigosEstacoes)):
                 link = bk.preparaLink(codigosEstacoes[i], dataInicio, dataFim, tipo='d') 
@@ -68,7 +69,6 @@ def acionaSite(estadoEstacao):
                 dfgeral = bk.convertee(dfgeral)
                 dfgeral = dfgeral.rename(columns = {"VL_LATITUDE":"lat"})
                 dfgeral = dfgeral.rename(columns = {"VL_LONGITUDE":"lon"})
-                #st.map(dfgeral)
                 if (i == 0):
                     dfgeral.to_csv('tabelaCompleta-' + estadoEstacao + '.csv', mode='w', header=True)
                 else:
@@ -78,7 +78,8 @@ def acionaSite(estadoEstacao):
             dmap['lon'] = pd.to_numeric(dmap['lon'])
             dmap['CHUVA'] = pd.to_numeric(dmap['CHUVA'])
             dmapa = dmap[['lat','lon', 'CHUVA']]
-            st.map(dmapa)
+    st.map(dmapa)
+            
 
 link = "https://apitempo.inmet.gov.br/estacoes/T"
 
