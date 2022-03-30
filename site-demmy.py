@@ -20,8 +20,8 @@ st.title("Dados estações - INMET")
 bk.sub_text("Projeto de Estagio", align="center", font=30)
 
 
-img = '/home/igorkso/Desktop/estagio/api-apac/background.png'
-icone = '/home/igorkso/Desktop/estagio/api-apac/ic.jpeg'
+img = 'background.png'
+icone = 'ic.jpeg'
 bk.set_bg_hack(img)
 st.sidebar.image(icone, use_column_width=True)
 
