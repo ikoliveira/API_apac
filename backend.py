@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import july
 import numpy as np
 from matplotlib import dates
+import base64
 
 # Formata a string que representa o link que será usado para download das estacoes.
 @st.cache
@@ -162,3 +163,70 @@ def convertee(df):
         except:
             continue
     return df
+
+
+
+
+def set_bg_hack(main_bg):
+    '''
+    A function to unpack an image from root folder and set as bg.
+    The bg will be static and won't take resolution of device into account.
+    Returns
+    -------
+    The background.
+    '''
+    # set bg name
+    main_bg_ext = "png"
+        
+    st.markdown(
+         f"""
+         <style>
+         .stApp {{
+             background: url(data:image/{main_bg_ext};base64,{base64.b64encode(open(main_bg, "rb").read()).decode()});
+             background-size: cover
+         }}
+         </style>
+         """,
+         unsafe_allow_html=True
+     )
+
+
+def app_meta(icon):
+    main_bg_ext = "png"
+     # set sidebar width
+    st.markdown(
+    """
+
+    <style>
+
+    [data-testid="stSidebar"][aria-expanded="true"] > div:first-child {
+        width: 300px;
+    }
+
+    [data-testid="stSidebar"][aria-expanded="false"] > div:first-child {
+        width: 300px;
+        margin-left: -300px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+    )
+
+
+def sub_text(text, align, font):
+    '''
+    A function to neatly display text in app.
+    Parameters
+    ----------
+    text : Just plain text.
+    Returns
+    -------
+    Text defined by html5 code below.
+    '''
+    
+    html_temp = f"""
+    <h1 style = "color:#1B3B69; text-align:{align}; font-size: {font}px"> {text} </h1>
+    </div>
+    """
+    
+    st.markdown(html_temp, unsafe_allow_html = True)

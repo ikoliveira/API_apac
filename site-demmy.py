@@ -15,9 +15,18 @@ import calmap
 import calplot
 import numpy as np
 
-st.title("Dados estações - INMET")
-    #st.markdown("Projeto de estágio")
 
+st.title("Dados estações - INMET")
+bk.sub_text("Projeto de Estagio", align="center", font=30)
+
+
+img = '/home/igorkso/Desktop/estagio/api-apac/background.png'
+icone = '/home/igorkso/Desktop/estagio/api-apac/ic.jpeg'
+bk.set_bg_hack(img)
+st.sidebar.image(icone, use_column_width=True)
+
+
+@st.cache
 def acionaSite(estadoEstacao):
     codigosEstacoes = bk.codigosEstacoes(data, estadoEstacao)
     for i in range(len(codigosEstacoes)):
@@ -46,30 +55,28 @@ def acionaSite(estadoEstacao):
             if var != 'Mapa de Precipitação':
                 st.write(tabela['DC_NOME'][0])
                 bk.decideGrafico(var, chuvasite, dataInicio, dataFim)
-            else:
-                dfgeral = pd.DataFrame(data = None);
-                for i in range(len(codigosEstacoes)):
-                    link = bk.preparaLink(codigosEstacoes[i], dataInicio, dataFim, tipo='d') 
-                    dados = requests.get(link)
-                    dat = json.loads(dados.text)
-                    dfgeral = pd.json_normalize(dat)
-                    dfgeral = bk.convertee(dfgeral)
-                    dfgeral = dfgeral.rename(columns = {"VL_LATITUDE":"lat"})
-                    dfgeral = dfgeral.rename(columns = {"VL_LONGITUDE":"lon"})
-                    #st.dataframe(dmap)
-                    if (i == 0):
-                        dfgeral.to_csv('tabelaCompleta-' + estadoEstacao + '.csv', mode='w', header=True)
-                    else:
-                        dfgeral.to_csv('tabelaCompleta-' + estadoEstacao + '.csv', mode='a', header=False)
-                dmap = pd.read_csv('tabelaCompleta-RN.csv', delimiter=',')
-                dmap['lat'] = pd.to_numeric(dmap['lat'])
-                dmap['lon'] = pd.to_numeric(dmap['lon'])
-                dmap['CHUVA'] = pd.to_numeric(dmap['CHUVA'])
-                dmapa = dmap[['lat','lon', 'CHUVA']]
-#st.dataframe(dmapa)
 
-                bk.decideGrafico('Mapa de Precipitação', dmapa, dataInicio=None, dataFim=None)
-                break
+        elif(variavel == 'Mapa de Estações'):
+            dfgeral = pd.DataFrame(data = None);
+            for i in range(len(codigosEstacoes)):
+                link = bk.preparaLink(codigosEstacoes[i], dataInicio, dataFim, tipo='d') 
+                dados = requests.get(link)
+                dat = json.loads(dados.text)
+                dfgeral = pd.json_normalize(dat)
+                dfgeral = bk.convertee(dfgeral)
+                dfgeral = dfgeral.rename(columns = {"VL_LATITUDE":"lat"})
+                dfgeral = dfgeral.rename(columns = {"VL_LONGITUDE":"lon"})
+                #st.map(dfgeral)
+                if (i == 0):
+                    dfgeral.to_csv('tabelaCompleta-' + estadoEstacao + '.csv', mode='w', header=True)
+                else:
+                    dfgeral.to_csv('tabelaCompleta-' + estadoEstacao + '.csv', mode='a', header=False)
+            dmap = pd.read_csv('tabelaCompleta-' + estadoEstacao + '.csv', delimiter=',')
+            dmap['lat'] = pd.to_numeric(dmap['lat'])
+            dmap['lon'] = pd.to_numeric(dmap['lon'])
+            dmap['CHUVA'] = pd.to_numeric(dmap['CHUVA'])
+            dmapa = dmap[['lat','lon', 'CHUVA']]
+            st.map(dmapa)
 
 link = "https://apitempo.inmet.gov.br/estacoes/T"
 
@@ -83,11 +90,10 @@ estadoEstacao = st.sidebar.selectbox(
 
 dataInicio = st.sidebar.date_input("Data inicial")
 dataFim = st.sidebar.date_input("Data final")
-variavel = st.sidebar.selectbox("Selecione a variável desejada:", ['Temperatura e Umidade', 'Precipitação'])
+variavel = st.sidebar.selectbox("Selecione a variável desejada:", ['Temperatura e Umidade', 'Precipitação', 'Mapa de Estações'])
 
 if variavel == 'Precipitação':
-    var = st.sidebar.selectbox("Selecione abaixo a forma de visualização da precipitação:", ('Gráfico de Barras Modo Interativo', 'Mapa de Precipitação', 'Calendário'))
-
+    var = st.sidebar.selectbox("Selecione abaixo a forma de visualização da precipitação:", ('Gráfico de Barras Modo Interativo', 'Calendário'))
 
 
 if bk.validalink(link):
@@ -99,6 +105,7 @@ if bk.validalink(link):
     formRes=st.sidebar.button("SUBMIT")  
     if formRes:
         acionaSite(estadoEstacao)
-
+    else:
+        bk.sub_text("texto a ser inserido...", align="justify", font=15)
 else:
     st.warning('warnin')
